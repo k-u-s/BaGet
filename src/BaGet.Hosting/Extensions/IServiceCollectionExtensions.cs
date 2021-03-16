@@ -12,6 +12,12 @@ namespace BaGet
         public static IServiceCollection AddBaGetWebApplication(
             this IServiceCollection services,
             Action<BaGetApplication> configureAction)
+            => services.AddBaGetWebApplication(default, configureAction);
+
+        public static IServiceCollection AddBaGetWebApplication(
+            this IServiceCollection services,
+            string rootSectionKey,
+            Action<BaGetApplication> configureAction)
         {
             services
                 .AddControllers()
@@ -25,7 +31,7 @@ namespace BaGet
             services.AddHttpContextAccessor();
             services.AddTransient<IUrlGenerator, BaGetUrlGenerator>();
 
-            services.AddBaGetApplication(configureAction);
+            services.AddBaGetApplication(rootSectionKey, configureAction);
 
             return services;
         }

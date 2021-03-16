@@ -16,9 +16,17 @@ namespace BaGet.Core
             this IServiceCollection services,
             Action<BaGetApplication> configureAction)
         {
+            return services.AddBaGetApplication(string.Empty, configureAction);
+        }
+
+        public static IServiceCollection AddBaGetApplication(
+            this IServiceCollection services,
+            string rootSectionKey,
+            Action<BaGetApplication> configureAction)
+        {
             var app = new BaGetApplication(services);
 
-            services.AddConfiguration();
+            services.AddConfiguration(rootSectionKey);
             services.AddBaGetServices();
             services.AddDefaultProviders();
 
@@ -38,35 +46,44 @@ namespace BaGet.Core
         /// The configuration key that should be used when configuring the options.
         /// If null, the root configuration will be used to configure the options.
         /// </param>
+        /// <param name="rootSectionKey">
+        /// The configuration section that should be used when configuring options. 
+        /// If null, the root configuration will be used to configure the options.
+        /// </param>
         /// <returns>The dependency injection container.</returns>
         public static IServiceCollection AddBaGetOptions<TOptions>(
             this IServiceCollection services,
-            string key = null)
+            string key = null,
+            string rootSectionKey = default)
             where TOptions : class
         {
             services.AddSingleton<IValidateOptions<TOptions>>(new ValidateBaGetOptions<TOptions>(key));
             services.AddSingleton<IConfigureOptions<TOptions>>(provider =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
+                var section = string.IsNullOrEmpty(rootSectionKey)
+                    ? config
+                    : config.GetSection(rootSectionKey);
+
                 if (key != null)
                 {
-                    config = config.GetSection(key);
+                    section = section.GetSection(key);
                 }
 
-                return new BindOptions<TOptions>(config);
+                return new BindOptions<TOptions>(section);
             });
 
             return services;
         }
 
-        private static void AddConfiguration(this IServiceCollection services)
+        private static void AddConfiguration(this IServiceCollection services, string rootSectionKey)
         {
-            services.AddBaGetOptions<BaGetOptions>();
-            services.AddBaGetOptions<DatabaseOptions>(nameof(BaGetOptions.Database));
-            services.AddBaGetOptions<FileSystemStorageOptions>(nameof(BaGetOptions.Storage));
-            services.AddBaGetOptions<MirrorOptions>(nameof(BaGetOptions.Mirror));
-            services.AddBaGetOptions<SearchOptions>(nameof(BaGetOptions.Search));
-            services.AddBaGetOptions<StorageOptions>(nameof(BaGetOptions.Storage));
+            services.AddBaGetOptions<BaGetOptions>(rootSectionKey: rootSectionKey);
+            services.AddBaGetOptions<DatabaseOptions>(nameof(BaGetOptions.Database), rootSectionKey);
+            services.AddBaGetOptions<FileSystemStorageOptions>( nameof(BaGetOptions.Storage), rootSectionKey);
+            services.AddBaGetOptions<MirrorOptions>(nameof(BaGetOptions.Mirror), rootSectionKey);
+            services.AddBaGetOptions<SearchOptions>(nameof(BaGetOptions.Search), rootSectionKey);
+            services.AddBaGetOptions<StorageOptions>(nameof(BaGetOptions.Storage), rootSectionKey);
         }
 
         private static void AddBaGetServices(this IServiceCollection services)

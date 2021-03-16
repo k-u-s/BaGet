@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BaGet.Core;
@@ -17,9 +18,10 @@ namespace BaGet.Hosting
             Stream rawUploadStream = null;
             try
             {
-                if (request.HasFormContentType && request.Form.Files.Count > 0)
+                if (request.HasFormContentType)
                 {
-                    rawUploadStream = request.Form.Files[0].OpenReadStream();
+                    var file = request.Form.Files.FirstOrDefault();
+                    rawUploadStream = file is null ? request.Body : file.OpenReadStream();
                 }
                 else
                 {

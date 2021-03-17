@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>net5.0</TargetFrameworks>
 
     <PackageTags>NuGet</PackageTags>
     <Description>BaGet's NuGet server implementation</Description>
@@ -14,5 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
   </ItemGroup>
+
 </Project>
 

@@ -100,7 +100,7 @@ namespace BaGet.Core
 
 
             _logger.LogInformation(
-                "Persisted package {Id} {Version} content to storage, saving metadata to database...",
+                "Persisted package {Identifier} {Version} content to storage, saving metadata to database...",
                 package.Identifier,
                 package.NormalizedVersionString);
 
@@ -132,7 +132,7 @@ namespace BaGet.Core
             }
 
             _logger.LogInformation(
-                "Persisted package {Id} {Version} content to storage, saving metadata to database...",
+                "Persisted package {Identifier} {Version} content to storage, saving metadata to database...",
                 package.Identifier,
                 package.NormalizedVersionString);
 
@@ -140,7 +140,7 @@ namespace BaGet.Core
             if (result == PackageAddResult.PackageAlreadyExists)
             {
                 _logger.LogWarning(
-                    "Package {Id} {Version} metadata already exists in database",
+                    "Package {Identifier} {Version} metadata already exists in database",
                     package.Identifier,
                     package.NormalizedVersionString);
 
@@ -155,14 +155,14 @@ namespace BaGet.Core
             }
 
             _logger.LogInformation(
-                "Successfully persisted package {Id} {Version} metadata to database. Indexing in search...",
+                "Successfully persisted package {Identifier} {Version} metadata to database. Indexing in search...",
                 package.Identifier,
                 package.NormalizedVersionString);
 
             await _search.IndexAsync(package, cancellationToken);
 
             _logger.LogInformation(
-                "Successfully indexed package {Id} {Version} in search",
+                "Successfully indexed package {Identifier} {Version} in search",
                 package.Identifier,
                 package.NormalizedVersionString);
 

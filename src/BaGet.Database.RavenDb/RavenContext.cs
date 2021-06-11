@@ -40,8 +40,11 @@ namespace BaGet.Database.RavenDb
             throw new NotSupportedException();
         }
 
-        public Task AddAsync(Package package)
-            => _session.StoreAsync(package);
+        public async Task AddAsync(Package package)
+        {
+            await _session.StoreAsync(package, null);
+            package.PrimaryKey = _session.Advanced.GetDocumentId(package);
+        }
 
         public Task RemoveAsync(Package package)
         {

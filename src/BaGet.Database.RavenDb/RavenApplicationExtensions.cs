@@ -23,6 +23,7 @@ namespace BaGet.Database.RavenDb
             app.Services.Configure(configure);
             return app;
         }
+
         public static BaGetApplication AddRavenStorage(this BaGetApplication app)
         {
             app.Services.AddTransient<RavenStorage>();

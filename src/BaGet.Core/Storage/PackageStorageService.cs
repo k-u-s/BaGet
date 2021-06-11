@@ -45,24 +45,28 @@ namespace BaGet.Core
 
             var packagePath = new Blob()
             {
+                PackageKey = package.PrimaryKey,
                 PackageId = lowercasedId,
                 Name = PackageName(lowercasedId, lowercasedNormalizedVersion),
                 Path = PackagePath(lowercasedId, lowercasedNormalizedVersion)
             };
             var nuspecPath = new Blob()
             {
+                PackageKey = package.PrimaryKey,
                 PackageId = lowercasedId,
                 Name = NuspecName(lowercasedId, lowercasedNormalizedVersion),
                 Path = NuspecPath(lowercasedId, lowercasedNormalizedVersion)
             };
             var readmePath = new Blob()
             {
+                PackageKey = package.PrimaryKey,
                 PackageId = lowercasedId,
                 Name = ReadmeName(lowercasedId, lowercasedNormalizedVersion),
                 Path = ReadmePath(lowercasedId, lowercasedNormalizedVersion)
             };
             var iconPath =  new Blob()
             {
+                PackageKey = package.PrimaryKey,
                 PackageId = lowercasedId,
                 Name = IconName(lowercasedId, lowercasedNormalizedVersion),
                 Path = IconPath(lowercasedId, lowercasedNormalizedVersion)

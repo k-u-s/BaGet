@@ -25,7 +25,7 @@ namespace BaGet.Database.RavenDb
             cancellationToken.ThrowIfCancellationRequested();
 
             var attachmentResult = await _session.Advanced.Attachments.GetAsync(
-                blob.PackageId, blob.Name, cancellationToken);
+                blob.PackageKey, blob.Name, cancellationToken);
             return attachmentResult.Stream;
         }
 
@@ -42,19 +42,18 @@ namespace BaGet.Database.RavenDb
 
             cancellationToken.ThrowIfCancellationRequested();
             var exists = await _session.Advanced.Attachments.ExistsAsync(
-                blob.PackageId, blob.Name, cancellationToken);
+                blob.PackageKey, blob.Name, cancellationToken);
             if (exists)
                 return StoragePutResult.Conflict;
 
-            _session.Advanced.Attachments.Store(blob.PackageId, blob.Name, content, contentType);
+            _session.Advanced.Attachments.Store(blob.PackageKey, blob.Name, content, contentType);
             await _session.SaveChangesAsync(cancellationToken);
             return StoragePutResult.Success;
         }
 
         public async Task DeleteAsync(Blob blob, CancellationToken cancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            _session.Advanced.Attachments.Delete(blob.PackageId, blob.Name);
+            // Attachments are deleted with document
         }
     }
 }

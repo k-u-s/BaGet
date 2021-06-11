@@ -13,7 +13,7 @@ namespace BaGet.Database.RavenDb
     {
         private readonly IAsyncDocumentSession _session;
 
-        public bool SupportsLimitInSubqueries => true;
+        public bool SupportsLimitInSubqueries => false;
 
         public IQueryable<Package> PackagesQueryable => _session.Query<Package>();
         public IQueryable<Package> PackagesIncludedQueryable => PackagesQueryable;

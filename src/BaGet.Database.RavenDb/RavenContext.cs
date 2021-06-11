@@ -14,7 +14,7 @@ namespace BaGet.Database.RavenDb
 
         public bool SupportsLimitInSubqueries => true;
 
-        public IQueryable<Package> PackagesQueryable => new AsyncRavenQueryProvider<Package>(_session.Query<Package>());
+        public IQueryable<Package> PackagesQueryable => new AsyncRavenQuery<Package>(_session.Query<Package>());
 
         public RavenContext(IAsyncDocumentSession session)
         {

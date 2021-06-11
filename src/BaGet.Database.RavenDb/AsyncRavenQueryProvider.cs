@@ -10,41 +10,29 @@ using Raven.Client.Documents.Linq;
 
 namespace BaGet.Database.RavenDb
 {
-    public class AsyncRavenQueryProvider<T> : IQueryable<T>, IAsyncQueryProvider
+    public class AsyncRavenQueryProvider : IAsyncQueryProvider
     {
-        private readonly IQueryable<T> _query;
+        private readonly IQueryProvider _provider;
 
-        public Type ElementType => _query.ElementType;
-        public Expression Expression => _query.Expression;
-        public IQueryProvider Provider  => _query.Provider;
-
-        public AsyncRavenQueryProvider(IQueryable<T> query)
+        public AsyncRavenQueryProvider(IQueryProvider provider)
         {
-            _query = query;
-        }
-
-        public IEnumerator<T> GetEnumerator()
-            => _query.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            _provider = provider;
         }
 
         public IQueryable CreateQuery(Expression expression)
-            => Provider.CreateQuery(expression);
+            => _provider.CreateQuery(expression);
 
         public IQueryable<TElement> CreateQuery<TElement>(Expression expression)
-            => Provider.CreateQuery<TElement>(expression);
+            => _provider.CreateQuery<TElement>(expression);
 
         public object Execute(Expression expression)
-            => Provider.Execute(expression);
+            => _provider.Execute(expression);
 
         public TResult Execute<TResult>(Expression expression)
-            => Provider.Execute<TResult>(expression);
+            => _provider.Execute<TResult>(expression);
 
         public TResult ExecuteAsync<TResult>(Expression expression,
             CancellationToken cancellationToken = new CancellationToken())
-            => Provider.Execute<TResult>(expression);
+            => _provider.Execute<TResult>(expression);
     }
 }

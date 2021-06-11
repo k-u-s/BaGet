@@ -6,7 +6,7 @@ namespace BaGet.Azure
 {
     /// <summary>
     /// The Azure Table Storage entity that maps to a <see cref="Package"/>.
-    /// The <see cref="TableEntity.PartitionKey"/> is the <see cref="Package.Id"/> and
+    /// The <see cref="TableEntity.PartitionKey"/> is the <see cref="Package.Identifier"/> and
     /// the <see cref="TableEntity.RowKey"/> is the <see cref="Package.Version"/>.
     /// </summary>
     public class PackageEntity : TableEntity, IDownloadCount, IListed
@@ -68,7 +68,7 @@ namespace BaGet.Azure
 
     /// <summary>
     /// The Azure Table Storage entity to update the <see cref="Package.Listed"/> column.
-    /// The <see cref="TableEntity.PartitionKey"/> is the <see cref="Package.Id"/> and
+    /// The <see cref="TableEntity.PartitionKey"/> is the <see cref="Package.Identifier"/> and
     /// the <see cref="TableEntity.RowKey"/> is the <see cref="Package.Version"/>.
     /// </summary>
     public class PackageListingEntity : TableEntity, IListed
@@ -82,7 +82,7 @@ namespace BaGet.Azure
 
     /// <summary>
     /// The Azure Table Storage entity to update the <see cref="Package.Downloads"/> column.
-    /// The <see cref="TableEntity.PartitionKey"/> is the <see cref="Package.Id"/> and
+    /// The <see cref="TableEntity.PartitionKey"/> is the <see cref="Package.Identifier"/> and
     /// the <see cref="TableEntity.RowKey"/> is the <see cref="Package.Version"/>.
     /// </summary>
     public class PackageDownloadsEntity : TableEntity, IDownloadCount

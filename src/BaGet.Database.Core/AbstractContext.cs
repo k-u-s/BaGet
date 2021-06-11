@@ -93,11 +93,11 @@ namespace BaGet.Core
         private void BuildPackageEntity(EntityTypeBuilder<Package> package)
         {
             package.HasKey(p => p.Key);
-            package.HasIndex(p => p.Id);
-            package.HasIndex(p => new { p.Id, p.NormalizedVersionString })
+            package.HasIndex(p => p.Identifier);
+            package.HasIndex(p => new {Id = p.Identifier, p.NormalizedVersionString })
                 .IsUnique();
 
-            package.Property(p => p.Id)
+            package.Property(p => p.Identifier)
                 .HasMaxLength(MaxPackageIdLength)
                 .IsRequired();
 

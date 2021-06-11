@@ -35,7 +35,7 @@ namespace BaGet.Core
 
                 foreach (var package in await _context.GetBatchAsync(batch, cancellationToken))
                 {
-                    var packageId = package.Id.ToLowerInvariant();
+                    var packageId = package.Identifier.ToLowerInvariant();
                     var packageVersion = package.NormalizedVersionString.ToLowerInvariant();
 
                     if (!packageDownloads.ContainsKey(packageId) ||

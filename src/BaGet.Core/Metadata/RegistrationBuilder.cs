@@ -43,7 +43,7 @@ namespace BaGet.Core
 
         public virtual RegistrationLeafResponse BuildLeaf(Package package)
         {
-            var id = package.Id;
+            var id = package.Identifier;
             var version = package.Version;
 
             return new RegistrationLeafResponse
@@ -60,25 +60,25 @@ namespace BaGet.Core
         private BaGetRegistrationIndexPageItem ToRegistrationIndexPageItem(Package package) =>
             new BaGetRegistrationIndexPageItem
             {
-                RegistrationLeafUrl = _url.GetRegistrationLeafUrl(package.Id, package.Version),
-                PackageContentUrl = _url.GetPackageDownloadUrl(package.Id, package.Version),
+                RegistrationLeafUrl = _url.GetRegistrationLeafUrl(package.Identifier, package.Version),
+                PackageContentUrl = _url.GetPackageDownloadUrl(package.Identifier, package.Version),
                 PackageMetadata = new BaGetPackageMetadata
                 {
-                    PackageId = package.Id,
+                    PackageId = package.Identifier,
                     Version = package.Version.ToFullString(),
                     Authors = string.Join(", ", package.Authors),
                     Description = package.Description,
                     Downloads = package.Downloads,
                     HasReadme = package.HasReadme,
                     IconUrl = package.HasEmbeddedIcon
-                        ? _url.GetPackageIconDownloadUrl(package.Id, package.Version)
+                        ? _url.GetPackageIconDownloadUrl(package.Identifier, package.Version)
                         : package.IconUrlString,
                     Language = package.Language,
                     LicenseUrl = package.LicenseUrlString,
                     Listed = package.Listed,
                     MinClientVersion = package.MinClientVersion,
                     ReleaseNotes = package.ReleaseNotes,
-                    PackageContentUrl = _url.GetPackageDownloadUrl(package.Id, package.Version),
+                    PackageContentUrl = _url.GetPackageDownloadUrl(package.Identifier, package.Version),
                     PackageTypes = package.PackageTypes.Select(t => t.Name).ToList(),
                     ProjectUrl = package.ProjectUrlString,
                     RepositoryUrl = package.RepositoryUrlString,

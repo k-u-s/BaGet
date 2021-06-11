@@ -26,7 +26,7 @@ namespace BaGet.Database.Sqlite
             base.OnModelCreating(builder);
 
             builder.Entity<Package>()
-                .Property(p => p.Id)
+                .Property(p => p.Identifier)
                 .HasColumnType("TEXT COLLATE NOCASE");
 
             builder.Entity<Package>()

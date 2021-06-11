@@ -40,7 +40,7 @@ namespace BaGet.Core
         {
             var query = _context
                 .PackagesQueryable
-                .Where(p => p.Id == id);
+                .Where(p => p.Identifier == id);
             return await _context.AnyAsync(query, cancellationToken);
         }
 
@@ -48,7 +48,7 @@ namespace BaGet.Core
         {
             var query = _context
                 .PackagesQueryable
-                .Where(p => p.Id == id)
+                .Where(p => p.Identifier == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
             return await _context.AnyAsync(query, cancellationToken);
         }
@@ -56,7 +56,7 @@ namespace BaGet.Core
         public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
         {
             var query = _context.PackagesIncludedQueryable
-                .Where(p => p.Id == id);
+                .Where(p => p.Identifier == id);
 
             if (!includeUnlisted)
             {
@@ -73,7 +73,7 @@ namespace BaGet.Core
             CancellationToken cancellationToken)
         {
             var query = _context.PackagesIncludedQueryable
-                .Where(p => p.Id == id)
+                .Where(p => p.Identifier == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
 
             if (!includeUnlisted)
@@ -102,7 +102,7 @@ namespace BaGet.Core
         public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
             var query = _context.PackagesIncludedQueryable
-                .Where(p => p.Id == id)
+                .Where(p => p.Identifier == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
             var package = await _context.FirstOrDefaultAsync(query, cancellationToken);
             if (package == null)
@@ -120,7 +120,7 @@ namespace BaGet.Core
             CancellationToken cancellationToken)
         {
             var query = _context.PackagesQueryable
-                .Where(p => p.Id == id)
+                .Where(p => p.Identifier == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
             var package = await _context.FirstOrDefaultAsync(query, cancellationToken);
 

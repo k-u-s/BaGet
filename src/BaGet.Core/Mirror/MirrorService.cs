@@ -105,7 +105,7 @@ namespace BaGet.Core
         {
             return new Package
             {
-                Id = metadata.PackageId,
+                Identifier = metadata.PackageId,
                 Version = metadata.ParseVersion(),
                 Authors = ParseAuthors(metadata.Authors),
                 Description = metadata.Description,

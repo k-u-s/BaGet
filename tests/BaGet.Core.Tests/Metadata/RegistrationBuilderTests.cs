@@ -55,7 +55,7 @@ namespace BaGet.Core.Tests.Metadata
         {            
             return new Package
             {
-                Id = packageId,
+                Identifier = packageId,
                 Authors = new string[] { "test" },
                 PackageTypes = new List<PackageType> { new PackageType { Name = "test" } },
                 Dependencies = new List<PackageDependency> { },

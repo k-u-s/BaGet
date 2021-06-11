@@ -49,7 +49,7 @@ namespace BaGet.Database.PostgreSql
             builder.HasPostgresExtension("citext");
 
             builder.Entity<Package>()
-                .Property(p => p.Id)
+                .Property(p => p.Identifier)
                 .HasColumnType("citext");
 
             builder.Entity<Package>()

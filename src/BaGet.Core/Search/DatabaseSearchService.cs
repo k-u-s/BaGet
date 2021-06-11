@@ -34,19 +34,19 @@ namespace BaGet.Core
                 var versions = package.OrderByDescending(p => p.Version).ToList();
                 var latest = versions.First();
                 var iconUrl = latest.HasEmbeddedIcon
-                    ? _url.GetPackageIconDownloadUrl(latest.Id, latest.Version)
+                    ? _url.GetPackageIconDownloadUrl(latest.Identifier, latest.Version)
                     : latest.IconUrlString;
 
                 result.Add(new SearchResult
                 {
-                    PackageId = latest.Id,
+                    PackageId = latest.Identifier,
                     Version = latest.Version.ToFullString(),
                     Description = latest.Description,
                     Authors = latest.Authors,
                     IconUrl = iconUrl,
                     LicenseUrl = latest.LicenseUrlString,
                     ProjectUrl = latest.ProjectUrlString,
-                    RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Id),
+                    RegistrationIndexUrl = _url.GetRegistrationIndexUrl(latest.Identifier),
                     Summary = latest.Summary,
                     Tags = latest.Tags,
                     Title = latest.Title,
@@ -54,7 +54,7 @@ namespace BaGet.Core
                     Versions = versions
                         .Select(p => new SearchResultVersion
                         {
-                            RegistrationLeafUrl = _url.GetRegistrationLeafUrl(p.Id, p.Version),
+                            RegistrationLeafUrl = _url.GetRegistrationLeafUrl(p.Identifier, p.Version),
                             Version = p.Version.ToFullString(),
                             Downloads = p.Downloads,
                         })
@@ -79,7 +79,7 @@ namespace BaGet.Core
             if (!string.IsNullOrEmpty(request.Query))
             {
                 var queryText = request.Query.ToLower();
-                search = search.Where(p => p.Id.ToLower().Contains(queryText));
+                search = search.Where(p => p.Identifier.ToLower().Contains(queryText));
             }
 
             search = AddSearchFilters(
@@ -94,7 +94,7 @@ namespace BaGet.Core
                 .Distinct()
                 .Skip(request.Skip)
                 .Take(request.Take)
-                .Select(p => p.Id);
+                .Select(p => p.Identifier);
 
             var results = await _context.ToListAsync(query, cancellationToken);
 
@@ -113,7 +113,7 @@ namespace BaGet.Core
             var packageId = request.PackageId.ToLower();
             IQueryable<Package> search = _context
                 .PackagesQueryable
-                .Where(p => p.Id.ToLower().Equals(packageId));
+                .Where(p => p.Identifier.ToLower().Equals(packageId));
 
             search = AddSearchFilters(
                 search,
@@ -144,7 +144,7 @@ namespace BaGet.Core
                 .Take(20)
                 .Select(r => new DependentResult
                 {
-                    Id = r.Id,
+                    Id = r.Identifier,
                     Description = r.Description,
                     TotalDownloads = r.Downloads
                 })
@@ -175,10 +175,10 @@ namespace BaGet.Core
             if (!string.IsNullOrEmpty(request.Query))
             {
                 var query = request.Query.ToLower();
-                search = search.Where(p => p.Id.ToLower().Contains(query));
+                search = search.Where(p => p.Identifier.ToLower().Contains(query));
             }
 
-            var packageIds = search.Select(p => p.Id)
+            var packageIds = search.Select(p => p.Identifier)
                 .Distinct()
                 .OrderBy(id => id)
                 .Skip(request.Skip)
@@ -192,13 +192,13 @@ namespace BaGet.Core
             //   2. Find all package versions for these package IDs
             if (_context.SupportsLimitInSubqueries)
             {
-                search = _context.PackagesQueryable.Where(p => packageIds.Contains(p.Id));
+                search = _context.PackagesQueryable.Where(p => packageIds.Contains(p.Identifier));
             }
             else
             {
                 var packageIdResults = await _context.ToListAsync(packageIds, cancellationToken);
 
-                search = _context.PackagesQueryable.Where(p => packageIdResults.Contains(p.Id));
+                search = _context.PackagesQueryable.Where(p => packageIdResults.Contains(p.Identifier));
             }
 
             search = AddSearchFilters(
@@ -210,7 +210,7 @@ namespace BaGet.Core
 
             var results = await _context.ToListAsync(search, cancellationToken);
 
-            return results.GroupBy(p => p.Id).ToList();
+            return results.GroupBy(p => p.Identifier).ToList();
         }
 
         private IQueryable<Package> AddSearchFilters(

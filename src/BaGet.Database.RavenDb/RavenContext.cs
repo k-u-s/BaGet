@@ -42,8 +42,8 @@ namespace BaGet.Database.RavenDb
 
         public async Task AddAsync(Package package)
         {
-            await _session.StoreAsync(package, $"{package.Id}/{package.NormalizedVersionString}");
-            package.PrimaryKey = _session.Advanced.GetDocumentId(package);
+            await _session.StoreAsync(package, $"{package.Identifier}/{package.NormalizedVersionString}");
+            package.Id = _session.Advanced.GetDocumentId(package);
         }
 
         public Task RemoveAsync(Package package)

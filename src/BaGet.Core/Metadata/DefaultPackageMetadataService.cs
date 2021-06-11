@@ -74,8 +74,8 @@ namespace BaGet.Core
             }
 
             // Mrge the local packages into the upstream packages.
-            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
-            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Id, p.Version));
+            var result = upstreamPackages.ToDictionary(p => new PackageIdentity(p.Identifier, p.Version));
+            var local = localPackages.ToDictionary(p => new PackageIdentity(p.Identifier, p.Version));
 
             foreach (var localPackage in local)
             {

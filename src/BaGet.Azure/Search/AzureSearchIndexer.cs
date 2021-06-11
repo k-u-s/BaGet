@@ -27,11 +27,11 @@ namespace BaGet.Azure
 
         public async Task IndexAsync(Package package, CancellationToken cancellationToken)
         {
-            var packages = await _packages.FindAsync(package.Id, includeUnlisted: false, cancellationToken);
+            var packages = await _packages.FindAsync(package.Identifier, includeUnlisted: false, cancellationToken);
 
             var actions = _actionBuilder.UpdatePackage(
                 new PackageRegistration(
-                    package.Id,
+                    package.Identifier,
                     packages));
 
             await _batchIndexer.IndexAsync(actions, cancellationToken);

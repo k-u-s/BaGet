@@ -19,10 +19,10 @@ namespace BaGet.Azure
 
             var entity = new PackageEntity
             {
-                PartitionKey = package.Id.ToLowerInvariant(),
+                PartitionKey = package.Identifier.ToLowerInvariant(),
                 RowKey = normalizedVersion.ToLowerInvariant(),
 
-                Id = package.Id,
+                Id = package.Identifier,
                 NormalizedVersion = normalizedVersion,
                 OriginalVersion = version.ToFullString(),
                 Authors = JsonConvert.SerializeObject(package.Authors),

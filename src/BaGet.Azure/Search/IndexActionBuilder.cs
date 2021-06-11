@@ -75,7 +75,7 @@ namespace BaGet.Azure
                 var document = new PackageDocument();
 
                 document.Key = $"{encodedId}-{searchFilters}";
-                document.Id = latest.Id;
+                document.Id = latest.Identifier;
                 document.Version = latest.Version.ToFullString();
                 document.Description = latest.Description;
                 document.Authors = latest.Authors;

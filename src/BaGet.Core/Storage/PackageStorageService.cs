@@ -40,33 +40,33 @@ namespace BaGet.Core
             packageStream = packageStream ?? throw new ArgumentNullException(nameof(packageStream));
             nuspecStream = nuspecStream ?? throw new ArgumentNullException(nameof(nuspecStream));
 
-            var lowercasedId = package.Id.ToLowerInvariant();
+            var lowercasedId = package.Identifier.ToLowerInvariant();
             var lowercasedNormalizedVersion = package.NormalizedVersionString.ToLowerInvariant();
 
             var packagePath = new Blob()
             {
-                PackageKey = package.PrimaryKey,
+                PackageKey = package.Id,
                 PackageId = lowercasedId,
                 Name = PackageName(lowercasedId, lowercasedNormalizedVersion),
                 Path = PackagePath(lowercasedId, lowercasedNormalizedVersion)
             };
             var nuspecPath = new Blob()
             {
-                PackageKey = package.PrimaryKey,
+                PackageKey = package.Id,
                 PackageId = lowercasedId,
                 Name = NuspecName(lowercasedId, lowercasedNormalizedVersion),
                 Path = NuspecPath(lowercasedId, lowercasedNormalizedVersion)
             };
             var readmePath = new Blob()
             {
-                PackageKey = package.PrimaryKey,
+                PackageKey = package.Id,
                 PackageId = lowercasedId,
                 Name = ReadmeName(lowercasedId, lowercasedNormalizedVersion),
                 Path = ReadmePath(lowercasedId, lowercasedNormalizedVersion)
             };
             var iconPath =  new Blob()
             {
-                PackageKey = package.PrimaryKey,
+                PackageKey = package.Id,
                 PackageId = lowercasedId,
                 Name = IconName(lowercasedId, lowercasedNormalizedVersion),
                 Path = IconPath(lowercasedId, lowercasedNormalizedVersion)

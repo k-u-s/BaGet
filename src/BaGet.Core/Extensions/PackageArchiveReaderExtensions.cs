@@ -65,7 +65,7 @@ namespace BaGet.Core
 
             return new Package
             {
-                Id = nuspec.GetId(),
+                Identifier = nuspec.GetId(),
                 Version = nuspec.GetVersion(),
                 Authors = ParseAuthors(nuspec.GetAuthors()),
                 Description = nuspec.GetDescription(),

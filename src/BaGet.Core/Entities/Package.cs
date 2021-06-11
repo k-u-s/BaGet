@@ -8,9 +8,9 @@ namespace BaGet.Core
     public class Package
     {
         public int Key { get; set; }
-        public string PrimaryKey { get; set; }
-
         public string Id { get; set; }
+
+        public string Identifier { get; set; }
 
         public NuGetVersion Version
         {

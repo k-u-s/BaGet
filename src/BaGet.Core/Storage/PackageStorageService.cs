@@ -46,25 +46,25 @@ namespace BaGet.Core
             var packagePath = new Blob()
             {
                 Name = lowercasedNormalizedVersion,
-                PackageId = lowercasedId,
+                PackageId = PackageId(lowercasedId, lowercasedNormalizedVersion),
                 Path = PackagePath(lowercasedId, lowercasedNormalizedVersion)
             };
             var nuspecPath = new Blob()
             {
                 Name = lowercasedNormalizedVersion,
-                PackageId = lowercasedId,
+                PackageId = NuspecId(lowercasedId, lowercasedNormalizedVersion),
                 Path = NuspecPath(lowercasedId, lowercasedNormalizedVersion)
             };
             var readmePath = new Blob()
             {
                 Name = lowercasedNormalizedVersion,
-                PackageId = lowercasedId,
+                PackageId = ReadmeId(lowercasedId, lowercasedNormalizedVersion),
                 Path = ReadmePath(lowercasedId, lowercasedNormalizedVersion)
             };
             var iconPath =  new Blob()
             {
                 Name = lowercasedNormalizedVersion,
-                PackageId = lowercasedId,
+                PackageId = IconId(lowercasedId, lowercasedNormalizedVersion),
                 Path = IconPath(lowercasedId, lowercasedNormalizedVersion)
             };
 
@@ -188,25 +188,25 @@ namespace BaGet.Core
             var packagePath = new Blob()
             {
                 Name = lowercasedNormalizedVersion,
-                PackageId = lowercasedId,
+                PackageId = PackageId(lowercasedId, lowercasedNormalizedVersion),
                 Path = PackagePath(lowercasedId, lowercasedNormalizedVersion)
             };
             var nuspecPath = new Blob()
             {
                 Name = lowercasedNormalizedVersion,
-                PackageId = lowercasedId,
+                PackageId = NuspecId(lowercasedId, lowercasedNormalizedVersion),
                 Path = NuspecPath(lowercasedId, lowercasedNormalizedVersion)
             };
             var readmePath = new Blob()
             {
                 Name = lowercasedNormalizedVersion,
-                PackageId = lowercasedId,
+                PackageId = ReadmeId(lowercasedId, lowercasedNormalizedVersion),
                 Path = ReadmePath(lowercasedId, lowercasedNormalizedVersion)
             };
             var iconPath =  new Blob()
             {
                 Name = lowercasedNormalizedVersion,
-                PackageId = lowercasedId,
+                PackageId = IconId(lowercasedId, lowercasedNormalizedVersion),
                 Path = IconPath(lowercasedId, lowercasedNormalizedVersion)
             };
 
@@ -249,13 +249,34 @@ namespace BaGet.Core
             }
         }
 
+
+        private string PackageId(string lowercasedId, string lowercasedNormalizedVersion)
+        {
+            return $"{lowercasedId}.{lowercasedNormalizedVersion}.nupkg";
+        }
+
+        private string NuspecId(string lowercasedId, string lowercasedNormalizedVersion)
+        {
+            return $"{lowercasedId}.nuspec";
+        }
+
+        private string ReadmeId(string lowercasedId, string lowercasedNormalizedVersion)
+        {
+            return "readme";
+        }
+
+        private string IconId(string lowercasedId, string lowercasedNormalizedVersion)
+        {
+            return "icon";
+        }
+
         private string PackagePath(string lowercasedId, string lowercasedNormalizedVersion)
         {
             return Path.Combine(
                 PackagesPathPrefix,
                 lowercasedId,
                 lowercasedNormalizedVersion,
-                $"{lowercasedId}.{lowercasedNormalizedVersion}.nupkg");
+                PackageId(lowercasedId, lowercasedNormalizedVersion));
         }
 
         private string NuspecPath(string lowercasedId, string lowercasedNormalizedVersion)
@@ -264,7 +285,7 @@ namespace BaGet.Core
                 PackagesPathPrefix,
                 lowercasedId,
                 lowercasedNormalizedVersion,
-                $"{lowercasedId}.nuspec");
+                NuspecId(lowercasedId, lowercasedNormalizedVersion));
         }
 
         private string ReadmePath(string lowercasedId, string lowercasedNormalizedVersion)
@@ -273,7 +294,7 @@ namespace BaGet.Core
                 PackagesPathPrefix,
                 lowercasedId,
                 lowercasedNormalizedVersion,
-                "readme");
+                ReadmeId(lowercasedId, lowercasedNormalizedVersion));
         }
 
         private string IconPath(string lowercasedId, string lowercasedNormalizedVersion)
@@ -282,7 +303,7 @@ namespace BaGet.Core
                 PackagesPathPrefix,
                 lowercasedId,
                 lowercasedNormalizedVersion,
-                "icon");
+                IconId(lowercasedId, lowercasedNormalizedVersion));
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace BaGet.Core
         bool SupportsLimitInSubqueries { get; }
 
         IQueryable<Package> PackagesQueryable { get; }
+        IQueryable<Package> PackagesIncludedQueryable { get; }
 
         /// <summary>
         /// Check whether a <see cref="DbUpdateException"/> is due to a SQL unique constraint violation.
@@ -41,5 +43,12 @@ namespace BaGet.Core
 
         Task AddAsync(Package package);
         Task RemoveAsync(Package package);
+
+        Task<int> CountPackagesAsync(CancellationToken cancellationToken);
+        Task<List<Package>> GetBatchAsync(int batch, CancellationToken cancellationToken);
+
+        Task<bool> AnyAsync(IQueryable<Package> query, CancellationToken cancellationToken);
+        Task<Package> FirstOrDefaultAsync(IQueryable<Package> query, CancellationToken cancellationToken);
+        Task<List<T>> ToListAsync<T>(IQueryable<T> query, CancellationToken cancellationToken);
     }
 }

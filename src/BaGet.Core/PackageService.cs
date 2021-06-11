@@ -35,27 +35,24 @@ namespace BaGet.Core
 
         public async Task<bool> ExistsAsync(string id, CancellationToken cancellationToken)
         {
-            return await _context
+            var query = _context
                 .PackagesQueryable
-                .Where(p => p.Id == id)
-                .AnyAsync(cancellationToken);
+                .Where(p => p.Id == id);
+            return await _context.AnyAsync(query, cancellationToken);
         }
 
         public async Task<bool> ExistsAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return await _context
+            var query = _context
                 .PackagesQueryable
                 .Where(p => p.Id == id)
-                .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
-                .AnyAsync(cancellationToken);
+                .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
+            return await _context.AnyAsync(query, cancellationToken);
         }
 
         public async Task<IReadOnlyList<Package>> FindAsync(string id, bool includeUnlisted, CancellationToken cancellationToken)
         {
-            var query = _context.PackagesQueryable
-                .Include(p => p.Dependencies)
-                .Include(p => p.PackageTypes)
-                .Include(p => p.TargetFrameworks)
+            var query = _context.PackagesIncludedQueryable
                 .Where(p => p.Id == id);
 
             if (!includeUnlisted)
@@ -63,7 +60,7 @@ namespace BaGet.Core
                 query = query.Where(p => p.Listed);
             }
 
-            return (await query.ToListAsync(cancellationToken)).AsReadOnly();
+            return (await _context.ToListAsync(query, cancellationToken)).AsReadOnly();
         }
 
         public Task<Package> FindOrNullAsync(
@@ -72,9 +69,7 @@ namespace BaGet.Core
             bool includeUnlisted,
             CancellationToken cancellationToken)
         {
-            var query = _context.PackagesQueryable
-                .Include(p => p.Dependencies)
-                .Include(p => p.TargetFrameworks)
+            var query = _context.PackagesIncludedQueryable
                 .Where(p => p.Id == id)
                 .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
 
@@ -83,7 +78,7 @@ namespace BaGet.Core
                 query = query.Where(p => p.Listed);
             }
 
-            return query.FirstOrDefaultAsync(cancellationToken);
+            return _context.FirstOrDefaultAsync(query, cancellationToken);
         }
 
         public Task<bool> UnlistPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
@@ -103,17 +98,12 @@ namespace BaGet.Core
 
         public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            var package = await _context.PackagesQueryable
+            var query = _context.PackagesIncludedQueryable
                 .Where(p => p.Id == id)
-                .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
-                .Include(p => p.Dependencies)
-                .Include(p => p.TargetFrameworks)
-                .FirstOrDefaultAsync(cancellationToken);
-
+                .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
+            var package = await _context.FirstOrDefaultAsync(query, cancellationToken);
             if (package == null)
-            {
                 return false;
-            }
 
             await _context.RemoveAsync(package);
             await _context.SaveChangesAsync(cancellationToken);
@@ -127,10 +117,10 @@ namespace BaGet.Core
             Action<Package> action,
             CancellationToken cancellationToken)
         {
-            var package = await _context.PackagesQueryable
+            var query = _context.PackagesQueryable
                 .Where(p => p.Id == id)
-                .Where(p => p.NormalizedVersionString == version.ToNormalizedString())
-                .FirstOrDefaultAsync();
+                .Where(p => p.NormalizedVersionString == version.ToNormalizedString());
+            var package = await _context.FirstOrDefaultAsync(query, cancellationToken);
 
             if (package != null)
             {

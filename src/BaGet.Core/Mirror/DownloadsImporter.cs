@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -9,7 +7,7 @@ namespace BaGet.Core
 {
     public class DownloadsImporter
     {
-        private const int BatchSize = 200;
+        public const int BatchSize = 200;
 
         private readonly IContext _context;
         private readonly IPackageDownloadsSource _downloadsSource;
@@ -20,7 +18,7 @@ namespace BaGet.Core
             IPackageDownloadsSource downloadsSource,
             ILogger<DownloadsImporter> logger)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context;
             _downloadsSource = downloadsSource ?? throw new ArgumentNullException(nameof(downloadsSource));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -28,23 +26,21 @@ namespace BaGet.Core
         public async Task ImportAsync(CancellationToken cancellationToken)
         {
             var packageDownloads = await _downloadsSource.GetPackageDownloadsAsync();
-            var packages = await _context.PackagesQueryable.CountAsync();
+            var packages = await _context.CountPackagesAsync(cancellationToken);
             var batches = (packages / BatchSize) + 1;
 
             for (var batch = 0; batch < batches; batch++)
             {
                 _logger.LogInformation("Importing batch {Batch}...", batch);
 
-                foreach (var package in await GetBatchAsync(batch, cancellationToken))
+                foreach (var package in await _context.GetBatchAsync(batch, cancellationToken))
                 {
                     var packageId = package.Id.ToLowerInvariant();
                     var packageVersion = package.NormalizedVersionString.ToLowerInvariant();
 
                     if (!packageDownloads.ContainsKey(packageId) ||
                         !packageDownloads[packageId].ContainsKey(packageVersion))
-                    {
                         continue;
-                    }
 
                     package.Downloads = packageDownloads[packageId][packageVersion];
                 }
@@ -55,11 +51,5 @@ namespace BaGet.Core
             }
         }
 
-        private Task<List<Package>> GetBatchAsync(int batch, CancellationToken cancellationToken)
-            => _context.PackagesQueryable
-                .OrderBy(p => p.Key)
-                .Skip(batch * BatchSize)
-                .Take(BatchSize)
-                .ToListAsync(cancellationToken);
     }
 }

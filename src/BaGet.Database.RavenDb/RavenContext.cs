@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace BaGet.Database.RavenDb
         public bool SupportsLimitInSubqueries => true;
 
         public IQueryable<Package> PackagesQueryable => _session.Query<Package>();
+        public IQueryable<Package> PackagesIncludedQueryable => PackagesQueryable;
 
         public RavenContext(IAsyncDocumentSession session)
         {
@@ -46,5 +48,24 @@ namespace BaGet.Database.RavenDb
             _session.Delete(package);
             return Task.CompletedTask;
         }
+
+        public Task<int> CountPackagesAsync(CancellationToken cancellationToken)
+            => PackagesQueryable.CountAsync(cancellationToken);
+
+        public Task<List<Package>> GetBatchAsync(int batch, CancellationToken cancellationToken)
+            => PackagesQueryable
+                .OrderBy(p => p.Key)
+                .Skip(batch * DownloadsImporter.BatchSize)
+                .Take(DownloadsImporter.BatchSize)
+                .ToListAsync(cancellationToken);
+
+        public Task<bool> AnyAsync(IQueryable<Package> query, CancellationToken cancellationToken)
+            => query.AnyAsync(cancellationToken);
+
+        public Task<Package> FirstOrDefaultAsync(IQueryable<Package> query, CancellationToken cancellationToken)
+            => query.FirstOrDefaultAsync(cancellationToken);
+
+        public Task<List<T>> ToListAsync<T>(IQueryable<T> query, CancellationToken cancellationToken)
+            => query.ToListAsync(cancellationToken);
     }
 }

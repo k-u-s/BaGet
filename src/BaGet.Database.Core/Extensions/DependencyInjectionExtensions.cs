@@ -12,6 +12,7 @@ namespace BaGet.Core.Extensions
             Action<IServiceProvider, DbContextOptionsBuilder> configureContext)
             where TContext : DbContext, IContext
         {
+            services.AddScoped<IPackageRepository, PackageRepository>();
             services.AddDbContext<TContext>(configureContext);
             services.AddBaGetGenericContextProvider<TContext>(databaseType);
             return services;

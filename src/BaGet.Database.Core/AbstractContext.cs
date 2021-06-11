@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,6 +33,11 @@ namespace BaGet.Core
         { }
 
         public IQueryable<Package> PackagesQueryable => Packages.AsQueryable();
+        public IQueryable<Package> PackagesIncludedQueryable => PackagesQueryable
+            .Include(p => p.Dependencies)
+            .Include(p => p.PackageTypes)
+            .Include(p => p.TargetFrameworks)
+            ;
 
         public DbSet<Package> Packages { get; set; }
         public DbSet<PackageDependency> PackageDependencies { get; set; }
@@ -194,5 +200,24 @@ namespace BaGet.Core
 
             targetFramework.Property(f => f.Moniker).HasMaxLength(MaxTargetFrameworkLength);
         }
+
+        public Task<int> CountPackagesAsync(CancellationToken cancellationToken)
+            => PackagesQueryable.CountAsync(cancellationToken);
+
+        public Task<List<Package>> GetBatchAsync(int batch, CancellationToken cancellationToken)
+            => PackagesQueryable
+                .OrderBy(p => p.Key)
+                .Skip(batch * DownloadsImporter.BatchSize)
+                .Take(DownloadsImporter.BatchSize)
+                .ToListAsync(cancellationToken);
+
+        public Task<bool> AnyAsync(IQueryable<Package> query, CancellationToken cancellationToken)
+            => query.AnyAsync(cancellationToken);
+
+        public Task<Package> FirstOrDefaultAsync(IQueryable<Package> query, CancellationToken cancellationToken)
+            => query.FirstOrDefaultAsync(cancellationToken);
+
+        public Task<List<T>> ToListAsync<T>(IQueryable<T> query, CancellationToken cancellationToken)
+            => query.ToListAsync(cancellationToken);
     }
 }

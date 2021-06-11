@@ -78,8 +78,8 @@ namespace BaGet.Core
 
             if (!string.IsNullOrEmpty(request.Query))
             {
-                var query = request.Query.ToLower();
-                search = search.Where(p => p.Id.ToLower().Contains(query));
+                var queryText = request.Query.ToLower();
+                search = search.Where(p => p.Id.ToLower().Contains(queryText));
             }
 
             search = AddSearchFilters(
@@ -89,13 +89,14 @@ namespace BaGet.Core
                 request.PackageType,
                 frameworks: null);
 
-            var results = await search
+            var query = search
                 .OrderByDescending(p => p.Downloads)
                 .Distinct()
                 .Skip(request.Skip)
                 .Take(request.Take)
-                .Select(p => p.Id)
-                .ToListAsync(cancellationToken);
+                .Select(p => p.Id);
+
+            var results = await _context.ToListAsync(query, cancellationToken);
 
             return new AutocompleteResponse
             {
@@ -121,9 +122,9 @@ namespace BaGet.Core
                 packageType: null,
                 frameworks: null);
 
-            var results = await search
-                .Select(p => p.NormalizedVersionString)
-                .ToListAsync(cancellationToken);
+            var query = search
+                .Select(p => p.NormalizedVersionString);
+            var results = await _context.ToListAsync(query, cancellationToken);
 
             return new AutocompleteResponse
             {
@@ -135,7 +136,7 @@ namespace BaGet.Core
 
         public async Task<DependentsResponse> FindDependentsAsync(string packageId, CancellationToken cancellationToken)
         {
-            var results = await _context
+            var query = _context
                 .PackagesQueryable
                 .Where(p => p.Listed)
                 .OrderByDescending(p => p.Downloads)
@@ -147,8 +148,8 @@ namespace BaGet.Core
                     Description = r.Description,
                     TotalDownloads = r.Downloads
                 })
-                .Distinct()
-                .ToListAsync(cancellationToken);
+                .Distinct();
+            var results = await _context.ToListAsync(query, cancellationToken);
 
             return new DependentsResponse
             {
@@ -195,7 +196,7 @@ namespace BaGet.Core
             }
             else
             {
-                var packageIdResults = await packageIds.ToListAsync(cancellationToken);
+                var packageIdResults = await _context.ToListAsync(packageIds, cancellationToken);
 
                 search = _context.PackagesQueryable.Where(p => packageIdResults.Contains(p.Id));
             }
@@ -207,7 +208,7 @@ namespace BaGet.Core
                 request.PackageType,
                 frameworks);
 
-            var results = await search.ToListAsync(cancellationToken);
+            var results = await _context.ToListAsync(search, cancellationToken);
 
             return results.GroupBy(p => p.Id).ToList();
         }

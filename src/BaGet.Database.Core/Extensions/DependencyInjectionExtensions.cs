@@ -17,6 +17,8 @@ namespace BaGet.Core.Extensions
             services.AddDbContext<TContext>(configureContext);
             services.AddBaGetGenericContextProvider<TContext>(databaseType);
             services.TryAddTransient<DatabaseSearchService>();
+            services.TryAddTransient<ISearchService>(provider => provider.GetRequiredService<DatabaseSearchService>());
+
             services.AddProvider<ISearchService>((provider, config) =>
             {
                 if (!config.HasSearchType("Database")) return null;

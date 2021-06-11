@@ -14,6 +14,7 @@ namespace BaGet.Database.RavenDb
             app.Services.AddBaGetGenericContextProvider<RavenContext>("Raven");
 
             app.Services.TryAddTransient<RavenSearchService>();
+            app.Services.TryAddTransient<ISearchService>(provider => provider.GetRequiredService<RavenSearchService>());
             app.Services.AddProvider<ISearchService>((provider, config) =>
             {
                 if (!config.HasSearchType("Database"))

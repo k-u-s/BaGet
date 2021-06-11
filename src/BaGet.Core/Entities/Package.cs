@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using NuGet.Versioning;
 
 namespace BaGet.Core
@@ -12,6 +13,7 @@ namespace BaGet.Core
 
         public string Identifier { get; set; }
 
+        [JsonIgnore] // TODO: Remove id and replace with repo specific handling
         public NuGetVersion Version
         {
             get

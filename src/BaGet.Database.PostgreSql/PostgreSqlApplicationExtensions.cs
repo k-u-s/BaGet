@@ -1,5 +1,6 @@
 using System;
 using BaGet.Core;
+using BaGet.Core.Extensions;
 using BaGet.Database.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

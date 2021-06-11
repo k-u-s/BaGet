@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 
 namespace BaGet.Core
@@ -27,7 +26,7 @@ namespace BaGet.Core
 
                 return PackageAddResult.Success;
             }
-            catch (DbUpdateException e)
+            catch (Exception e)
                 when (_context.IsUniqueConstraintViolationException(e))
             {
                 return PackageAddResult.PackageAlreadyExists;

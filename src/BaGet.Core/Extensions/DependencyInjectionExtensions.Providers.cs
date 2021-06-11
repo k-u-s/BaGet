@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -64,17 +63,6 @@ namespace BaGet.Core
         public static bool HasStorageType(this IConfiguration config, string value)
         {
             return config[StorageTypeKey].Equals(value, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public static IServiceCollection AddBaGetDbContextProvider<TContext>(
-            this IServiceCollection services,
-            string databaseType,
-            Action<IServiceProvider, DbContextOptionsBuilder> configureContext)
-            where TContext : DbContext, IContext
-        {
-            services.AddDbContext<TContext>(configureContext);
-            services.AddBaGetGenericContextProvider<TContext>(databaseType);
-            return services;
         }
 
         public static IServiceCollection AddBaGetGenericContextProvider<TContext>(

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BaGet.Core\BaGet.Core.csproj" />
+    <ProjectReference Include="..\BaGet.Database.Core\BaGet.Database.Core.csproj" />
   </ItemGroup>
 
 </Project>

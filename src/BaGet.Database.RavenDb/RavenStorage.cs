@@ -41,17 +41,12 @@ namespace BaGet.Database.RavenDb
                 throw new ArgumentException("Content type is required", nameof(contentType));
 
             cancellationToken.ThrowIfCancellationRequested();
-
-            var packageEntity = await _session.LoadAsync<Package>(blob.PackageId, cancellationToken);
-            if (packageEntity is null)
-                throw new ArgumentNullException(nameof(packageEntity));
-
             var exists = await _session.Advanced.Attachments.ExistsAsync(
                 blob.PackageId, blob.Name, cancellationToken);
             if (exists)
                 return StoragePutResult.Conflict;
 
-            _session.Advanced.Attachments.Store(packageEntity, blob.Name, content, contentType);
+            _session.Advanced.Attachments.Store(blob.PackageId, blob.Name, content, contentType);
             await _session.SaveChangesAsync(cancellationToken);
             return StoragePutResult.Success;
         }

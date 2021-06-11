@@ -16,12 +16,15 @@ namespace BaGet.Core
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<PackageAddResult> AddAsync(Package package, CancellationToken cancellationToken)
+        public async Task AddAsync(Package package, CancellationToken cancellationToken)
+        {
+            await _context.AddAsync(package);
+        }
+
+        public async Task<PackageAddResult> SaveAsync(CancellationToken cancellationToken)
         {
             try
             {
-                await _context.AddAsync(package);
-
                 await _context.SaveChangesAsync(cancellationToken);
 
                 return PackageAddResult.Success;

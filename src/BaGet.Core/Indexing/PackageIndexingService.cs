@@ -98,6 +98,13 @@ namespace BaGet.Core
                 package.Id,
                 package.NormalizedVersionString);
 
+
+            _logger.LogInformation(
+                "Persisted package {Id} {Version} content to storage, saving metadata to database...",
+                package.Id,
+                package.NormalizedVersionString);
+
+            await _packages.AddAsync(package, cancellationToken);
             try
             {
                 packageStream.Position = 0;
@@ -129,7 +136,7 @@ namespace BaGet.Core
                 package.Id,
                 package.NormalizedVersionString);
 
-            var result = await _packages.AddAsync(package, cancellationToken);
+            var result = await _packages.SaveAsync(cancellationToken);
             if (result == PackageAddResult.PackageAlreadyExists)
             {
                 _logger.LogWarning(

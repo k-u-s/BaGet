@@ -23,6 +23,8 @@ namespace BaGet.Azure
         private readonly CloudTable _table;
         private readonly ILogger<TablePackageService> _logger;
 
+        private TableOperation _operation;
+
         public TablePackageService(
             TableOperationBuilder operationBuilder,
             CloudTableClient client,
@@ -33,17 +35,31 @@ namespace BaGet.Azure
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<PackageAddResult> AddAsync(Package package, CancellationToken cancellationToken)
+        public Task AddAsync(Package package, CancellationToken cancellationToken)
         {
+            if (_operation != null)
+                throw new InvalidOperationException("Operation already inprogress");
+
+            _operation = _operationBuilder.AddPackage(package);
+            return Task.CompletedTask;
+        }
+
+        public async Task<PackageAddResult> SaveAsync(CancellationToken cancellationToken)
+        {
+            if (_operation is null)
+                throw new InvalidOperationException("Operation missing");
+
             try
             {
-                var operation = _operationBuilder.AddPackage(package);
-
-                await _table.ExecuteAsync(operation, cancellationToken);
+                await _table.ExecuteAsync(_operation, cancellationToken);
             }
             catch (StorageException e) when (e.IsAlreadyExistsException())
             {
                 return PackageAddResult.PackageAlreadyExists;
+            }
+            finally
+            {
+                _operation = null;
             }
 
             return PackageAddResult.Success;

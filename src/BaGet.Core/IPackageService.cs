@@ -12,12 +12,20 @@ namespace BaGet.Core
     public interface IPackageService
     {
         /// <summary>
-        /// Attempt to add a new package to the database.
+        /// Attempt to mark a new package to add the database.
         /// </summary>
         /// <param name="package">The package to add to the database.</param>
         /// <param name="cancellationToken">A token to cancel the task.</param>
         /// <returns>The result of attempting to add the package to the database.</returns>
-        Task<PackageAddResult> AddAsync(Package package, CancellationToken cancellationToken);
+        Task AddAsync(Package package, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Attempt to save added package to the database.
+        /// </summary>
+        /// <param name="package">The package to add to the database.</param>
+        /// <param name="cancellationToken">A token to cancel the task.</param>
+        /// <returns>The result of attempting to add the package to the database.</returns>
+        Task<PackageAddResult> SaveAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Attempt to find a package with the given id and version.

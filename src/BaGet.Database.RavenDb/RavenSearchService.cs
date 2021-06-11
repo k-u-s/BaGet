@@ -181,7 +181,9 @@ namespace BaGet.Database.RavenDb
             if (!string.IsNullOrEmpty(request.Query))
             {
                 var query = request.Query.ToLower();
-                search = search.Where(p => p.Identifier.ToLower().Contains(query));
+                search = search
+                    .Search(p => p.Identifier, query)
+                    ;
             }
 
             var packageIds = search.Select(p => p.Identifier)

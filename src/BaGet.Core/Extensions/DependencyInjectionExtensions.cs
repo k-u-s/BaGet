@@ -47,7 +47,7 @@ namespace BaGet.Core
         /// If null, the root configuration will be used to configure the options.
         /// </param>
         /// <param name="rootSectionKey">
-        /// The configuration section that should be used when configuring options. 
+        /// The configuration section that should be used when configuring options.
         /// If null, the root configuration will be used to configure the options.
         /// </param>
         /// <returns>The dependency injection container.</returns>
@@ -113,7 +113,6 @@ namespace BaGet.Core
             services.TryAddTransient<ISymbolIndexingService, SymbolIndexingService>();
             services.TryAddTransient<ISymbolStorageService, SymbolStorageService>();
 
-            services.TryAddTransient<DatabaseSearchService>();
             services.TryAddTransient<FileStorageService>();
             services.TryAddTransient<MirrorService>();
             services.TryAddTransient<MirrorV2Client>();
@@ -179,7 +178,7 @@ namespace BaGet.Core
             // database service should be used for search. This effect is achieved by deferring
             // the database search service's registration until the very end.
             services.TryAddTransient<ISearchIndexer>(provider => provider.GetRequiredService<NullSearchIndexer>());
-            services.TryAddTransient<ISearchService>(provider => provider.GetRequiredService<DatabaseSearchService>());
+            services.TryAddTransient<ISearchService>(provider => provider.GetRequiredService<NullSearchService>());
         }
 
         private static HttpClient HttpClientFactory(IServiceProvider provider)
@@ -215,7 +214,7 @@ namespace BaGet.Core
         {
             var options = provider.GetRequiredService<IOptionsSnapshot<MirrorOptions>>();
             var service = options.Value.Enabled ? typeof(MirrorService) : typeof(NullMirrorService);
-            
+
             return (IMirrorService)provider.GetRequiredService(service);
         }
 

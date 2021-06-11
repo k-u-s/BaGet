@@ -10,6 +10,15 @@ namespace BaGet.Database.RavenDb
     {
         public static BaGetApplication AddRavenDatabase(this BaGetApplication app)
         {
+            app.Services.TryAddTransient<RavenSearchService>();
+            app.Services.AddProvider<ISearchService>((provider, config) =>
+            {
+                if (!config.HasSearchType("Database")) return null;
+                if (!config.HasDatabaseType("Raven")) return null;
+
+                return provider.GetRequiredService<RavenSearchService>();
+            });
+
             app.Services.AddScoped<RavenContext>();
             app.Services.AddBaGetGenericContextProvider<RavenContext>("RavenDb");
             return app;

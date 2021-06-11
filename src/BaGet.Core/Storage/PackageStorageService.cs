@@ -166,22 +166,22 @@ namespace BaGet.Core
 
         public async Task<Stream> GetPackageStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return await GetStreamAsync(id, version, PackagePath, cancellationToken);
+            return await GetStreamAsync(id, version, PackageName, PackagePath, cancellationToken);
         }
 
         public async Task<Stream> GetNuspecStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return await GetStreamAsync(id, version, NuspecPath, cancellationToken);
+            return await GetStreamAsync(id, version, NuspecName, NuspecPath, cancellationToken);
         }
 
         public async Task<Stream> GetReadmeStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return await GetStreamAsync(id, version, ReadmePath, cancellationToken);
+            return await GetStreamAsync(id, version, ReadmeName, ReadmePath, cancellationToken);
         }
 
         public async Task<Stream> GetIconStreamAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return await GetStreamAsync(id, version, IconPath, cancellationToken);
+            return await GetStreamAsync(id, version, IconName, IconPath, cancellationToken);
         }
 
         public async Task DeleteAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
@@ -223,6 +223,7 @@ namespace BaGet.Core
         private async Task<Stream> GetStreamAsync(
             string id,
             NuGetVersion version,
+            Func<string, string, string> nameFunc,
             Func<string, string, string> pathFunc,
             CancellationToken cancellationToken)
         {
@@ -230,8 +231,9 @@ namespace BaGet.Core
             var lowercasedNormalizedVersion = version.ToNormalizedString().ToLowerInvariant();
             var path =new Blob()
             {
-                Name = lowercasedNormalizedVersion,
+                PackageKey = $"{id}/{lowercasedNormalizedVersion}",
                 PackageId = lowercasedId,
+                Name = nameFunc(lowercasedId, lowercasedNormalizedVersion),
                 Path =  pathFunc(lowercasedId, lowercasedNormalizedVersion)
             };
 

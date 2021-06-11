@@ -94,13 +94,6 @@ namespace BaGet.Core
 
                 return provider.GetRequiredService<NullSearchIndexer>();
             });
-            services.AddProvider<ISearchService>((provider, config) =>
-            {
-                if (!config.HasSearchType(DatabaseSearchType)) return null;
-                if (!config.HasDatabaseType(databaseType)) return null;
-
-                return provider.GetRequiredService<NullSearchService>();
-            });
             return services;
         }
 

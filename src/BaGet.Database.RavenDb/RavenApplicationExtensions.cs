@@ -13,8 +13,10 @@ namespace BaGet.Database.RavenDb
             app.Services.TryAddTransient<RavenSearchService>();
             app.Services.AddProvider<ISearchService>((provider, config) =>
             {
-                if (!config.HasSearchType("Database")) return null;
-                if (!config.HasDatabaseType("Raven")) return null;
+                if (!config.HasSearchType("Database"))
+                    return null;
+                if (!config.HasDatabaseType("Raven"))
+                    return null;
 
                 return provider.GetRequiredService<RavenSearchService>();
             });

@@ -13,6 +13,9 @@ namespace BaGet.Core.Extensions
             Action<IServiceProvider, DbContextOptionsBuilder> configureContext)
             where TContext : DbContext, IContext
         {
+
+            services.AddDbContext<TContext>(configureContext);
+            services.AddBaGetGenericContextProvider<TContext>(databaseType);
             services.TryAddTransient<DatabaseSearchService>();
             services.AddProvider<ISearchService>((provider, config) =>
             {
@@ -21,9 +24,6 @@ namespace BaGet.Core.Extensions
 
                 return provider.GetRequiredService<DatabaseSearchService>();
             });
-
-            services.AddDbContext<TContext>(configureContext);
-            services.AddBaGetGenericContextProvider<TContext>(databaseType);
             return services;
         }
     }

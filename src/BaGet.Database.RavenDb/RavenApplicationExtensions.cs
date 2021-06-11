@@ -26,6 +26,7 @@ namespace BaGet.Database.RavenDb
         }
         public static BaGetApplication AddRavenStorage(this BaGetApplication app)
         {
+            app.Services.AddTransient<RavenStorage>();
             app.Services.TryAddTransient<IStorageService>(provider => provider.GetRequiredService<RavenStorage>());
             return app;
         }

@@ -231,7 +231,7 @@ namespace BaGet.Core
             var lowercasedNormalizedVersion = version.ToNormalizedString().ToLowerInvariant();
             var path =new Blob()
             {
-                PackageKey = $"{id}/{lowercasedNormalizedVersion}",
+                PackageKey = $"{lowercasedId}/{lowercasedNormalizedVersion}",
                 PackageId = lowercasedId,
                 Name = nameFunc(lowercasedId, lowercasedNormalizedVersion),
                 Path =  pathFunc(lowercasedId, lowercasedNormalizedVersion)

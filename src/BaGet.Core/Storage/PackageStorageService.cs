@@ -257,7 +257,7 @@ namespace BaGet.Core
 
         private string NuspecName(string lowercasedId, string lowercasedNormalizedVersion)
         {
-            return $"{lowercasedId}.nuspec";
+            return $"{lowercasedId}.{lowercasedNormalizedVersion}.nuspec";
         }
 
         private string ReadmeName(string lowercasedId, string lowercasedNormalizedVersion)

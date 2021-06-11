@@ -11,6 +11,7 @@ namespace BaGet.Database.RavenDb
     {
         public static BaGetApplication AddRavenDatabase(this BaGetApplication app)
         {
+            app.Services.AddScoped<RavenContext>();
             app.Services.AddBaGetGenericContextProvider<RavenContext>("RavenDb");
             return app;
         }

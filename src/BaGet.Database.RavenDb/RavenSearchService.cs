@@ -186,9 +186,10 @@ namespace BaGet.Database.RavenDb
                     ;
             }
 
-            var packageIds = search.Select(p => p.Identifier)
+            var packageIds = search
+                .OrderBy(p => p.Identifier)
+                .Select(p => p.Identifier)
                 .Distinct()
-                .OrderBy(id => id)
                 .Skip(request.Skip)
                 .Take(request.Take);
 

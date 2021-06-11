@@ -262,12 +262,12 @@ namespace BaGet.Core
 
         private string ReadmeName(string lowercasedId, string lowercasedNormalizedVersion)
         {
-            return "readme";
+            return $"{lowercasedId}.{lowercasedNormalizedVersion}.readme";
         }
 
         private string IconName(string lowercasedId, string lowercasedNormalizedVersion)
         {
-            return "icon";
+            return $"{lowercasedId}.{lowercasedNormalizedVersion}.icon";
         }
 
         private string PackagePath(string lowercasedId, string lowercasedNormalizedVersion)

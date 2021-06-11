@@ -109,7 +109,6 @@ namespace BaGet.Core
                 return false;
 
             await _context.RemoveAsync(package);
-            await _context.SaveChangesAsync(cancellationToken);
 
             return true;
         }

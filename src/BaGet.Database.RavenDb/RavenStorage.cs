@@ -13,14 +13,11 @@ namespace BaGet.Database.RavenDb
     public class RavenStorage : IStorageService
     {
         private readonly IAsyncDocumentSession _session;
-        private readonly IDocumentStore _store;
 
         public RavenStorage(
-            IAsyncDocumentSession session,
-            IDocumentStore store)
+            IAsyncDocumentSession session)
         {
             _session = session;
-            _store = store;
         }
 
         public async Task<Stream> GetAsync(Blob blob, CancellationToken cancellationToken = default)
@@ -45,8 +42,7 @@ namespace BaGet.Database.RavenDb
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var session = _store.OpenAsyncSession();
-            var packageEntity = await session.LoadAsync<Package>(blob.PackageId, cancellationToken);
+            var packageEntity = await _session.LoadAsync<Package>(blob.PackageId, cancellationToken);
             if (packageEntity is null)
                 throw new ArgumentNullException(nameof(packageEntity));
 
@@ -56,16 +52,14 @@ namespace BaGet.Database.RavenDb
                 return StoragePutResult.Conflict;
 
             _session.Advanced.Attachments.Store(packageEntity, blob.Name, content, contentType);
-            await session.SaveChangesAsync(cancellationToken);
+            await _session.SaveChangesAsync(cancellationToken);
             return StoragePutResult.Success;
         }
 
         public async Task DeleteAsync(Blob blob, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var session = _store.OpenAsyncSession();
-            session.Advanced.Attachments.Delete(blob.PackageId, blob.Name);
-            await session.SaveChangesAsync(cancellationToken);
+            _session.Advanced.Attachments.Delete(blob.PackageId, blob.Name);
         }
     }
 }

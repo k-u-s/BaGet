@@ -192,11 +192,13 @@ namespace BaGet.Azure
             return AsPackage(entity);
         }
 
-        public async Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
+        public Task<bool> HardDeletePackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)
         {
-            return await TryUpdatePackageAsync(
-                _operationBuilder.HardDeletePackage(id, version),
-                cancellationToken);
+            if (_operation != null)
+                throw new InvalidOperationException("Operation already inprogress");
+
+            _operation = _operationBuilder.HardDeletePackage(id, version);
+            return Task.FromResult(true);   // TODO: Check if package existed
         }
 
         public async Task<bool> RelistPackageAsync(string id, NuGetVersion version, CancellationToken cancellationToken)

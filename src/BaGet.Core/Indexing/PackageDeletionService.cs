@@ -73,13 +73,20 @@ namespace BaGet.Core
                     version);
             }
 
-            // Delete the package from storage. This is necessary even if the package isn't
-            // in the database to ensure that the storage is consistent with the database.
-            _logger.LogInformation("Hard deleting package {PackageId} {PackageVersion} from storage...",
-                id,
-                version);
+            try
+            {
+                // Delete the package from storage. This is necessary even if the package isn't
+                // in the database to ensure that the storage is consistent with the database.
+                _logger.LogInformation("Hard deleting package {PackageId} {PackageVersion} from storage...",
+                    id,
+                    version);
 
-            await _storage.DeleteAsync(id, version, cancellationToken);
+                await _storage.DeleteAsync(id, version, cancellationToken);
+            }
+            finally
+            {
+                await _packages.SaveAsync(cancellationToken);
+            }
 
             _logger.LogInformation(
                 "Hard deleted package {PackageId} {PackageVersion} from storage",

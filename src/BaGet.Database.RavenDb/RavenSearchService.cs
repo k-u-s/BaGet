@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BaGet.Core;
 using BaGet.Protocol.Models;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 
 namespace BaGet.Database.RavenDb
 {
@@ -197,13 +198,13 @@ namespace BaGet.Database.RavenDb
             //   2. Find all package versions for these package IDs
             if (_context.SupportsLimitInSubqueries)
             {
-                search = _context.PackagesQueryable.Where(p => packageIds.Contains(p.Identifier));
+                search = _context.PackagesQueryable.Where(p => p.Identifier.In(packageIds));
             }
             else
             {
                 var packageIdResults = await _context.ToListAsync(packageIds, cancellationToken);
 
-                search = _context.PackagesQueryable.Where(p => packageIdResults.Contains(p.Identifier));
+                search = _context.PackagesQueryable.Where(p => p.Identifier.In(packageIdResults));
             }
 
             search = AddSearchFilters(
@@ -242,7 +243,7 @@ namespace BaGet.Database.RavenDb
 
             if (frameworks != null)
             {
-                query = query.Where(p => p.TargetFrameworks.Any(f => frameworks.Contains(f.Moniker)));
+                query = query.Where(p => p.TargetFrameworks.Any(f => f.Moniker.In(frameworks)));
             }
 
             query = query.Where(p => p.Listed);

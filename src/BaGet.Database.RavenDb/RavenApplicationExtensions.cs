@@ -35,7 +35,7 @@ namespace BaGet.Database.RavenDb
             this BaGetApplication app,
             Action<FileSystemStorageOptions> configure)
         {
-            app.AddFileStorage();
+            app.AddRavenStorage();
             app.Services.Configure(configure);
             return app;
         }
